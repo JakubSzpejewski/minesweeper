@@ -25,6 +25,9 @@
             "dom",
             "es2015.promise",
             "es5"
+        ],
+        "typeRoots": [
+            "@types",
         ]
     },
     "filesGlob": [
@@ -32,4 +35,7 @@
         "./**/*.tsx",
         "!./node_modules/**/*"
     ],
+    "exclude": [
+        "@types",
+    ]
 }

@@ -80,6 +80,8 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist')
 	},
 
+	mode: 'development',
+
 	optimization: {
 		splitChunks: {
 			chunks: 'async',
@@ -96,6 +98,8 @@ module.exports = {
 		}
 	},
 	plugins: [
-		new HtmlWebpackPlugin()
+		new HtmlWebpackPlugin({
+			template: 'src/index.html'
+		})
 	]
 };
