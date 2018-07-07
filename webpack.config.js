@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const LiveReloadPlugin = require('webpack-livereload-plugin');
 /*
  * We've enabled MiniCssExtractPlugin for you. This allows your app to
  * use css modules that will be moved into a separate CSS file instead of inside
@@ -100,6 +100,7 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: 'src/index.html'
-		})
+		}),
+		new LiveReloadPlugin()
 	]
 };

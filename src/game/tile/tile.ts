@@ -2,7 +2,7 @@ import { Geom } from 'phaser';
 import { TILE_HEIGHT, TILE_WIDTH } from './consts';
 
 export class Tile {
-    public revealed: boolean = false;
+    public revealed: boolean = true;
     public box: Geom.Rectangle;
     private isBomb: boolean;
 
