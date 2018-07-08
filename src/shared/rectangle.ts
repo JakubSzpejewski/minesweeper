@@ -11,6 +11,10 @@ export class Rectangle {
 
     public middle: Vector2;
 
+    public contains(x: number, y: number): boolean {
+        return x > this.x && x < this.right && y > this.y && y < this.bottom;
+    }
+
     constructor(
         box: Box
     ) {

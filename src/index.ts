@@ -13,23 +13,35 @@ new p5((p: p5) => {
         p.resizeCanvas(BOARD_WIDTH * (TILE_WIDTH + TILE_OFFSET) + TILE_OFFSET, BOARD_HEIGHT * (TILE_HEIGHT + TILE_OFFSET) + TILE_OFFSET);
     };
 
+    p.mousePressed = () => {
+        for (const tileLine of board.board) {
+            for (const tile of tileLine) {
+                if (tile.rect.contains(p.mouseX, p.mouseY)) {
+                    tile.onClick();
+                }
+            }
+        }
+    };
+
     p.draw = () => {
         for (const tileLine of board.board) {
             for (const tile of tileLine) {
-                p.stroke(0, 0, 0);
+                p.stroke('#000000');
                 p.strokeWeight(1);
-                p.fill(p.color(0xffffff));
+                p.fill(tile.isRevealed() ? '#ffffff' : '#cecece');
                 p.rect(tile.rect.x, tile.rect.y, tile.rect.width, tile.rect.height);
-                if (tile.isBomb) {
-                    p.stroke(255, 0, 0);
-                    p.strokeWeight(5);
-                    p.ellipse(tile.rect.middle.x, tile.rect.middle.y, TILE_WIDTH / 1.5, TILE_HEIGHT / 1.5)
-                } else {
-                    // fuck p5 positioning
-                    p.fill(VALUE_TO_COLOR[tile.value]);
-                    p.stroke(VALUE_TO_COLOR[tile.value])
-                    p.textSize(TILE_HEIGHT);
-                    p.text(tile.value.toString(), tile.rect.x + TILE_WIDTH / 4, tile.rect.bottom - TILE_HEIGHT / 8);
+                if (tile.isRevealed()) {
+                    if (tile.isBomb) {
+                        p.stroke(255, 0, 0);
+                        p.strokeWeight(5);
+                        p.ellipse(tile.rect.middle.x, tile.rect.middle.y, TILE_WIDTH / 1.5, TILE_HEIGHT / 1.5)
+                    } else {
+                        // fuck p5 positioning
+                        p.fill(VALUE_TO_COLOR[tile.value]);
+                        p.stroke(VALUE_TO_COLOR[tile.value])
+                        p.textSize(TILE_HEIGHT);
+                        p.text(tile.value.toString(), tile.rect.x + TILE_WIDTH / 4, tile.rect.bottom - TILE_HEIGHT / 8);
+                    }
                 }
             }
         }
