@@ -1,5 +1,6 @@
 import { Tile } from "../tile/tile";
 import { TILE_WIDTH, TILE_HEIGHT, TILE_OFFSET } from '../tile/consts';
+import { Vector2 } from "../../shared/utils";
 
 export class Board {
     private static isInitialized: boolean = false;
@@ -19,17 +20,18 @@ export class Board {
 
     private init(size: [number, number], bombCount: number): void {
         this.rollBombs(size, bombCount);
-        console.log(this.bombs);
 
         this.populateBoard(size);
 
         this.calculateTileValue();
+
+        Board.isInitialized = true;
     }
 
     private getNeighbours(i: number, j: number): Tile[] {
         const ret: Tile[] = [];
-        for (let k = i - 1; k < i + 1; k++) {
-            for (let l = j - 1; l < j + 1; j++) {
+        for (let k = i - 1; k <= i + 1; k++) {
+            for (let l = j - 1; l <= j + 1; l++) {
                 if (k === i && l === j) {
                     continue;
                 }
@@ -62,7 +64,7 @@ export class Board {
     }
 
     private populateBoard(size: [number, number]): void {
-        let currentCoordinates: Vector2Like = { x: TILE_OFFSET, y: TILE_OFFSET };
+        let currentCoordinates: Vector2 = { x: TILE_OFFSET, y: TILE_OFFSET };
         for (let i = 0; i < size[0]; i++) {
 
             currentCoordinates.x = TILE_OFFSET;
