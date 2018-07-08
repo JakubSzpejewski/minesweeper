@@ -11,16 +11,57 @@ export class Board {
         size: [number, number],
         bombCount: number,
     ) {
-        if (!Board.isInitialized) {
-            this.init(size, bombCount);
+        if (Board.isInitialized) {
+            throw new Error('Board is a singleton')
         }
+        this.init(size, bombCount);
     }
 
     private init(size: [number, number], bombCount: number): void {
-        this.populateBombs(size, bombCount);
-
+        this.rollBombs(size, bombCount);
         console.log(this.bombs);
 
+        this.populateBoard(size);
+
+        this.calculateTileValue();
+    }
+
+    private getNeighbours(i: number, j: number): Tile[] {
+        const ret: Tile[] = [];
+        for (let k = i - 1; k < i + 1; k++) {
+            for (let l = j - 1; l < j + 1; j++) {
+                if (k === i && l === j) {
+                    continue;
+                }
+                const tile: Tile | undefined = (this.board[k] || [])[l];
+                if (tile !== undefined) {
+                    ret.push(tile);
+                }
+            }
+        }
+        return ret;
+    }
+
+    private calculateTileValue(): void {
+        for (let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board[i].length; j++) {
+                let currentTile = this.board[i][j];
+                if (currentTile.isBomb) {
+                    continue;
+                }
+
+                const neighbours: Tile[] = this.getNeighbours(i, j);
+
+                for (const neighbour of neighbours) {
+                    if (neighbour.isBomb) {
+                        currentTile.value++;
+                    }
+                }
+            }
+        }
+    }
+
+    private populateBoard(size: [number, number]): void {
         let currentCoordinates: Vector2Like = { x: TILE_OFFSET, y: TILE_OFFSET };
         for (let i = 0; i < size[0]; i++) {
 
@@ -35,7 +76,7 @@ export class Board {
         }
     }
 
-    private populateBombs(size: [number, number], bombCount: number): void {
+    private rollBombs(size: [number, number], bombCount: number): void {
         const tilesCount = size[0] * size[1];
         for (let i = 0; i < bombCount; i++) {
             let randomNumber: number;

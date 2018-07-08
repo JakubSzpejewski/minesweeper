@@ -7,7 +7,7 @@ const boardSize: [number, number] = [BOARD_WIDTH, BOARD_HEIGHT];
 
 const board = new Board(boardSize, BOMBS_QUANTITY);
 
- 
+
 console.log(board);
 
 const game = new Game({
@@ -27,9 +27,11 @@ function create() {
         for (const tile of tileLine) {
             graphics.lineStyle(1, 0x000000);
             graphics.strokeRectShape(tile.box);
-            if (tile.getIsBomb()) {
+            if (tile.isBomb) {
                 graphics.lineStyle(4, 0xff0000);
                 graphics.strokeCircle(tile.box.centerX, tile.box.centerY, TILE_WIDTH / 4);
+            } else {
+                const text: GameObjects.Text = (<Scene>this).add.text(tile.box.centerX, tile.box.centerY, tile.value.toString(), { fontSize: '16px', fill: '#000' });
             }
         }
     }
