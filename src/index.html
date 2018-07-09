@@ -6,10 +6,26 @@
     <title>
         <%= htmlWebpackPlugin.options.title %>
     </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.dom.js"></script>
 </head>
 
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+    <div id="canvasContainer", oncontextmenu="return false;"></div>
+    <form>
+        <label>Please don't try to break anything, I don't feel like checking the inputs</label>
+        <br>
+        <label>Width: </label>
+        <input type="number", name="width", value="20" />
+        <br>
+        <label>Height: </label>
+        <input type="number", name="height", value="20"/>
+        <br> 
+        <label>Bombs: </label>
+        <input type="number", min="1", name="bombs", value="30" />
+        <br>
+        <button type="button", onclick="start(width.value, height.value, bombs.value)">Start</button>
+    </form>
 </body>
 
 </html>

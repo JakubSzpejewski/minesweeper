@@ -3,7 +3,6 @@ import { TILE_WIDTH, TILE_HEIGHT, TILE_OFFSET } from '../tile/consts';
 import { Vector2 } from "../../shared/utils";
 
 export class Board {
-    private static isInitialized: boolean = false;
 
     public board: Tile[][] = [];
     private bombs: number[] = [];
@@ -12,9 +11,6 @@ export class Board {
         size: [number, number],
         bombCount: number,
     ) {
-        if (Board.isInitialized) {
-            throw new Error('Board is a singleton')
-        }
         this.init(size, bombCount);
     }
 
@@ -22,10 +18,21 @@ export class Board {
         this.rollBombs(size, bombCount);
 
         this.populateBoard(size);
+    }
 
-        this.calculateTileValue();
 
-        Board.isInitialized = true;
+    public revealTile(i: number, j: number): void {
+        const tile = this.board[i][j];
+        if (tile.isRevealed()) {
+            return;
+        }
+        this.calculateTileValue(i, j);
+        tile.reveal();
+        if (!tile.isBomb && tile.value === 0) {
+            for (const neighbour of this.getNeighbours(i, j)) {
+                this.revealTile(neighbour.boardPosition[0], neighbour.boardPosition[1]);
+            }
+        }
     }
 
     private getNeighbours(i: number, j: number): Tile[] {
@@ -44,21 +51,17 @@ export class Board {
         return ret;
     }
 
-    private calculateTileValue(): void {
-        for (let i = 0; i < this.board.length; i++) {
-            for (let j = 0; j < this.board[i].length; j++) {
-                let currentTile = this.board[i][j];
-                if (currentTile.isBomb) {
-                    continue;
-                }
+    private calculateTileValue(i: number, j: number): void {
+        let currentTile = this.board[i][j];
+        if (currentTile.isBomb) {
+            return;
+        }
 
-                const neighbours: Tile[] = this.getNeighbours(i, j);
+        const neighbours: Tile[] = this.getNeighbours(i, j);
 
-                for (const neighbour of neighbours) {
-                    if (neighbour.isBomb) {
-                        currentTile.value++;
-                    }
-                }
+        for (const neighbour of neighbours) {
+            if (neighbour.isBomb) {
+                currentTile.value++;
             }
         }
     }
@@ -71,7 +74,7 @@ export class Board {
             this.board[i] = [];
 
             for (let j = 0; j < size[1]; j++) {
-                this.board[i].push(new Tile(this.isTileBomb(size, i, j), currentCoordinates));
+                this.board[i].push(new Tile(this.isTileBomb(size, i, j), currentCoordinates, [i, j]));
                 currentCoordinates.x += TILE_WIDTH + TILE_OFFSET;
             }
             currentCoordinates.y += TILE_HEIGHT + TILE_OFFSET;
