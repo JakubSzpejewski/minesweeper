@@ -3,12 +3,14 @@ import { Vector2 } from '../../shared/utils';
 import { Rectangle } from '../../shared/rectangle';
 
 export class Tile {
-    private revealed: boolean = false;
+    public revealed: boolean = false;
     public rect: Rectangle;
 
     public value: number = 0;
 
     public isMarked: boolean = false;
+
+    public lost: boolean = false;
 
     constructor(
         public isBomb: boolean,
@@ -17,10 +19,6 @@ export class Tile {
     ) {
         this.isBomb = isBomb;
         this.rect = new Rectangle({ x: coordinates.x, y: coordinates.y, width: TILE_WIDTH, height: TILE_HEIGHT });
-    }
-
-    public isRevealed(): boolean {
-        return this.revealed;
     }
 
     public reveal(): void {

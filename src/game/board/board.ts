@@ -9,7 +9,7 @@ export class Board {
 
     constructor(
         size: [number, number],
-        bombCount: number,
+        public bombCount: number,
     ) {
         this.init(size, bombCount);
     }
@@ -21,16 +21,29 @@ export class Board {
     }
 
 
-    public revealTile(i: number, j: number): void {
+    public revealTile(i: number, j: number, revealNeighbours: boolean = true): void {
         const tile = this.board[i][j];
-        if (tile.isRevealed()) {
+        if (tile.revealed) {
             return;
         }
         this.calculateTileValue(i, j);
         tile.reveal();
-        if (!tile.isBomb && tile.value === 0) {
+        if(tile.isBomb) {
+            tile.lost = true;
+            return;
+        }
+        if (!tile.isBomb && tile.value === 0 && revealNeighbours) {
             for (const neighbour of this.getNeighbours(i, j)) {
                 this.revealTile(neighbour.boardPosition[0], neighbour.boardPosition[1]);
+            }
+        }
+    }
+
+
+    public revealBoard(): void {
+        for (let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board[i].length; j++) {
+                this.revealTile(i, j, false);
             }
         }
     }
